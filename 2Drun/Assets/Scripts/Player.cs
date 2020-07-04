@@ -36,19 +36,19 @@ public class Player : MonoBehaviour
 
     [Header("Speed"), Tooltip("CHR speed")]
     int speed = 80;
-    [Header("hight"), Tooltip("CHR hight"), Range(10, 50)]
-    int hight = 50;
+    [Header("jump"), Tooltip("CHR jump"), Range(10, 50)]
+    int jump = 50;
     [Header("sound"), Tooltip("sound area")]
     AudioClip soundhight;
     AudioClip soundhit;
     [Header("gold")]
     int gold;
-    [Header("hp") Tooltip("CHR hp")]
+    [Header("hp")]
     float hp = 950.5f;
     [Header("dead"), Tooltip("true = dead ,false = survive")]
     bool dead;
 
-    
+
 
 
 
@@ -58,4 +58,63 @@ public class Player : MonoBehaviour
 
     #endregion
 
+
+
+    #region 方法區域
+    // C# 括號符號是成對出現的: () [] {} "" ''
+    // 摘要:方法的說明
+    // 在方法上方舔加三條 /
+    // 自訂方法 - 不會執行的，需要呼叫
+    // API - 功能倉庫
+    // 輸出功能 print ("字串")
+
+    /// <summary>
+    /// 角色的跳躍功能:跳躍動畫、撥放音效與往上跳
+    /// </summary>
+    private void Jump()
+    {
+        print("跳躍");
+    }
+
+    /// <summary>
+    /// 碰到障礙物時受傷:扣血
+    /// </summary>
+    private void Hit()
+    {
+        print("碰撞");
+    }
+
+    /// <summary>
+    /// 吃金幣:金幣數量增加，更新介面、金幣音效
+    /// </summary>
+    private void EatCoin()
+    {
+        print("吃金幣");
+    }
+
+    /// <summary>
+    /// 死亡:動畫，遊戲結束
+    /// </summary>
+    private void Dead()
+    {
+        print("死亡");
+    }
+    #endregion
+
+    #region 事件區域
+
+    // 開始 start
+    private void Start()
+    {
+        Jump();
+    }
+    // 更新 update
+    // 播放遊戲後一秒執行約 60 次 - 60FPS
+    // 移動、監聽玩家鍵盤、滑鼠與觸碰
+    private void Update()
+    {
+        Jump();
+    }
+
+    #endregion
 }
