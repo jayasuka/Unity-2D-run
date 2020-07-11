@@ -34,10 +34,10 @@ public class Player : MonoBehaviour
     //提示 Tooltip
     //範圍 Range
 
-    [Header("Speed"), Tooltip("CHR speed")]
+    [Header("Speed"), Tooltip("CHR speed"), Range(1,500)]
     public int speed = 80;
-    [Header("jump"), Tooltip("CHR jump"), Range(10, 50)]
-    public int jump = 50;
+    [Header("jump"), Tooltip("CHR jump"), Range(100, 500)]
+    public int height = 300;
     [Header("sound"), Tooltip("sound area")]
     AudioClip soundhight;
     AudioClip soundhit;
@@ -50,6 +50,15 @@ public class Player : MonoBehaviour
 
     [Header("動畫控制器")]
     public Animator ani;
+    [Header("膠囊碰撞器")]
+    public CapsuleCollider2D cc2d;
+    [Header("剛體")]
+    public Rigidbody2D rig;
+
+    /// <summary>
+    /// 是否在地板上
+    /// </summary>
+    public bool isGround;
     #endregion
 
 
@@ -62,16 +71,44 @@ public class Player : MonoBehaviour
     // API - 功能倉庫
     // 輸出功能 print ("字串")
 
+    private void move()
+    {
+        // 如果剛體.加速度.大小 小於 10
+        if (rig.velocity.magnitude < 10)
+        {
+            // 剛體.添加能力(二維向量)
+            rig.AddForce(new Vector2(speed, 0));
+        }
+    }
     /// <summary>
     /// 角色的跳躍功能:跳躍動畫、撥放音效與往上跳
     /// </summary>
     private void Jump()
     {
         // 布林值 = 輸入.取得按鍵(按鍵代碼列舉.左邊 alt)
-        bool key = Input.GetKey(KeyCode.LeftAlt);
+        bool Jump = Input.GetKey(KeyCode.LeftAlt);
 
         // 動畫控制器代號
-        ani.SetBool("跳躍鈕", key);
+
+        // 顛倒運算子 !
+        // 作用:將布林值變成相反
+        // !true ----- false
+
+        ani.SetBool("跳躍鈕", !isGround);
+
+        // 搬家  Alt+上、下
+        // 格式化 Ctrl+ K D
+
+        // 如果在地板上
+        if (isGround)
+        {
+            if (Jump)
+            {
+                isGround = false;                       // 不在地板上
+                rig.AddForce(new Vector2(0, height));   // 剛體.添加推力(二維向量)
+            }
+
+        }
     }
 
     /// <summary>
@@ -80,10 +117,23 @@ public class Player : MonoBehaviour
     private void slide()
     {
         // 布林值 = 輸入.取得按鍵(按鍵代碼列舉.左邊 ctrl)
-        bool key = Input.GetKey(KeyCode.LeftControl);
+        bool slide = Input.GetKey(KeyCode.LeftControl);
 
         // 動畫控制器代號
-        ani.SetBool("滑鈕", key);
+        ani.SetBool("滑鈕", slide);
+
+        if (slide)   // 如果 玩家 按下 左邊 ctrl 就縮小
+        {
+            cc2d.offset = new Vector2(-1.6f, -1.4f);   // 位移
+            cc2d.size = new Vector2(1.2f, 2.1f);   // 尺寸
+        }
+        // 否則 恢復
+        else
+        {
+            cc2d.offset = new Vector2(-1.6f, -0.35f);   // 位移
+            cc2d.size = new Vector2(1.2f, 4.23f);   // 尺寸
+        }
+
     }
 
     /// <summary>
@@ -116,17 +166,33 @@ public class Player : MonoBehaviour
     // 開始 start
     private void Start()
     {
-        
+
     }
     // 更新 update
     // 播放遊戲後一秒執行約 60 次 - 60FPS
     // 移動、監聽玩家鍵盤、滑鼠與觸碰
     private void Update()
     {
-        Jump();
-
         slide();
     }
 
+    private void FixedUpdate()
+    {
+        Jump();
+        move();
+    }
+    /// <summary>
+    /// 碰撞事件:碰到物件開始執行一次
+    /// </summary>
+    /// <param name="collision">碰到物件的碰撞資訊</param>
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 如果碰到物件的名稱等於"地板"
+        if (collision.gameObject.name == "地板")
+        {
+            // 是否在地板上 = 是
+            isGround = true;
+        }
+    }
     #endregion
 }
