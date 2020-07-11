@@ -35,27 +35,21 @@ public class Player : MonoBehaviour
     //範圍 Range
 
     [Header("Speed"), Tooltip("CHR speed")]
-    int speed = 80;
+    public int speed = 80;
     [Header("jump"), Tooltip("CHR jump"), Range(10, 50)]
-    int jump = 50;
+    public int jump = 50;
     [Header("sound"), Tooltip("sound area")]
     AudioClip soundhight;
     AudioClip soundhit;
     [Header("gold")]
-    int gold;
+    public int gold;
     [Header("hp")]
-    float hp = 950.5f;
+    public float hp = 950.5f;
     [Header("dead"), Tooltip("true = dead ,false = survive")]
-    bool dead;
+    public bool dead;
 
-
-
-
-
-
-
-
-
+    [Header("動畫控制器")]
+    public Animator ani;
     #endregion
 
 
@@ -73,7 +67,23 @@ public class Player : MonoBehaviour
     /// </summary>
     private void Jump()
     {
-        print("跳躍");
+        // 布林值 = 輸入.取得按鍵(按鍵代碼列舉.左邊 alt)
+        bool key = Input.GetKey(KeyCode.LeftAlt);
+
+        // 動畫控制器代號
+        ani.SetBool("跳躍鈕", key);
+    }
+
+    /// <summary>
+    /// 角色的滑行功能:滑行動畫、播放音效、縮小碰撞範圍
+    /// </summary>
+    private void slide()
+    {
+        // 布林值 = 輸入.取得按鍵(按鍵代碼列舉.左邊 ctrl)
+        bool key = Input.GetKey(KeyCode.LeftControl);
+
+        // 動畫控制器代號
+        ani.SetBool("滑鈕", key);
     }
 
     /// <summary>
@@ -106,7 +116,7 @@ public class Player : MonoBehaviour
     // 開始 start
     private void Start()
     {
-        Jump();
+        
     }
     // 更新 update
     // 播放遊戲後一秒執行約 60 次 - 60FPS
@@ -114,6 +124,8 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Jump();
+
+        slide();
     }
 
     #endregion
